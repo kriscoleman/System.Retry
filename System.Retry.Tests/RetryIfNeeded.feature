@@ -1,11 +1,18 @@
 ﻿Feature: RetryIfNeeded
 	In order to avoid silly mistakes
-	As a math idiot
-	I want to be told the sum of two numbers
+	I want to make sure System.Retry works as intended
 
-@mytag
-Scenario: Add two numbers
-	Given I have entered 50 into the calculator
-	And I have entered 70 into the calculator
-	When I press add
-	Then the result should be 120 on the screen
+@synchronous
+Scenario: I have an action I want to retry a certain number of times, and it exceeds the allowable number of retries
+	Given I have supplied a retry action
+	And I have defined a maximum of 5 retry attempts
+	When I retry and exceed my maximum
+	Then I will catch an OutOfRetries Exception
+
+#@asynchronous
+#Scenario: I have a async request I want to retry a certain number of times, and it exceeds the allowable number of retries
+#	Given I have supplied an async request to retry
+#	And I have defined a maximum of 5 retry attempts
+#	When I retry and exceed my maximum
+#	Then I will catch an OutOfRetries Exception
+

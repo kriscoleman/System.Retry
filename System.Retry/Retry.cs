@@ -20,8 +20,9 @@ namespace System.Retry
     /// <seealso cref="https://msdn.microsoft.com/en-us/library/dn589788.aspx"/>
     public static class Retry
     {
-        const string OutOfRetriesMessage = "Retry ran out of retry attempts.";
-        const string NonTransientExceptionEncounteredMessage =
+        internal const string OutOfRetriesMessage = "Retry ran out of retry attempts.";
+
+        internal const string NonTransientExceptionEncounteredMessage =
             "Retry encountered a non-transient exception, which the provided transient exception strategy determined was not safe for retry attempts.";
 
         /// <summary>
@@ -113,15 +114,14 @@ namespace System.Retry
                 }
             }
 
-            throw new AggregateException(OutOfRetriesMessage, encounteredExceptions); //out of retries
+            throw new OutOfRetriesException(encounteredExceptions); //out of retries
         }
 
 
         /// <summary>
         /// Executes the provided Transient Exception Strategy
         /// </summary>
-        static bool ExceptionIsTransient(Func<Exception, bool> trainsientExceptionStrategy,
-            IReadOnlyCollection<Exception> encounteredExceptions)
+        static bool ExceptionIsTransient(Func<Exception, bool> trainsientExceptionStrategy, IReadOnlyCollection<Exception> encounteredExceptions)
         {
             if (trainsientExceptionStrategy(encounteredExceptions.Last())) // the exception at the bottom of the stack is the one we want to check
                 return true;
@@ -129,7 +129,20 @@ namespace System.Retry
             if (encounteredExceptions.Count == 1)
                 throw encounteredExceptions.Single(); //if there is only one exception encountered, better to throw it unmanipulated.
 
-            throw new AggregateException(NonTransientExceptionEncounteredMessage, encounteredExceptions);
+            throw new NonTransientEncounteredAfterRetriesAggregateException(encounteredExceptions);
         }
+    }
+
+    public class OutOfRetriesException : AggregateException
+    {
+        public OutOfRetriesException(IEnumerable<Exception> encounteredExceptions) : base(Retry.OutOfRetriesMessage, encounteredExceptions)
+        { }
+    }
+
+    public class NonTransientEncounteredAfterRetriesAggregateException : AggregateException
+    {
+        public NonTransientEncounteredAfterRetriesAggregateException(IEnumerable<Exception> encounterExceptions)
+            : base(Retry.NonTransientExceptionEncounteredMessage, encounterExceptions)
+        { }
     }
 }
