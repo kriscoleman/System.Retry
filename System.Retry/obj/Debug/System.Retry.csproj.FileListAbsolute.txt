@@ -1,0 +1,5 @@
+C:\Users\kris\Source\GitHubRepos\System.Retry\System.Retry\bin\Debug\System.Retry.dll
+C:\Users\kris\Source\GitHubRepos\System.Retry\System.Retry\bin\Debug\System.Retry.pdb
+C:\Users\kris\Source\GitHubRepos\System.Retry\System.Retry\obj\Debug\System.Retry.csprojResolveAssemblyReference.cache
+C:\Users\kris\Source\GitHubRepos\System.Retry\System.Retry\obj\Debug\System.Retry.dll
+C:\Users\kris\Source\GitHubRepos\System.Retry\System.Retry\obj\Debug\System.Retry.pdb
