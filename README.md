@@ -13,10 +13,10 @@ For more info on this pattern, see: https://msdn.microsoft.com/en-us/library/dn5
  When executing a Retry action, a Transient Exception Stragegy is required. This is a simple Func<Exception, bool> predicate which tells Retry when it is safe to retry. If an exception does not meet the criteria of your strategy, it will roll up all encountered exceptions (transient and non-transient) and throw. 
 
 - for example, a strategy that would only allow retries on WebExceptions would be: 
-- 
-- exception => exception is WebException
 
- For more info on handling Transient Faults, see: https://msdn.microsoft.com/en-us/library/hh680901(v=pandp.50).aspx
+exception => exception is WebException
+
+For more info on handling Transient Faults, see: https://msdn.microsoft.com/en-us/library/hh680901(v=pandp.50).aspx
 
  # Out of Retries
  When out of retries (with no non-transient exceptions encountered), Retry will throw an OutOfRetriesException, which you can catch to either ignore, log, or display a friendly message to the user. 
