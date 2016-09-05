@@ -87,6 +87,29 @@ this.ScenarioSetup(scenarioInfo);
 #line hidden
             this.ScenarioCleanup();
         }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("I have a async request I want to retry a certain number of times, and it exceeds " +
+            "the allowable number of retries")]
+        [NUnit.Framework.CategoryAttribute("asynchronous")]
+        public virtual void IHaveAAsyncRequestIWantToRetryACertainNumberOfTimesAndItExceedsTheAllowableNumberOfRetries()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("I have a async request I want to retry a certain number of times, and it exceeds " +
+                    "the allowable number of retries", new string[] {
+                        "asynchronous"});
+#line 13
+this.ScenarioSetup(scenarioInfo);
+#line 14
+ testRunner.Given("I have supplied an async request to retry", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 15
+ testRunner.And("I have defined a maximum of 5 retry attempts", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 16
+ testRunner.When("I retry and exceed my maximum", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 17
+ testRunner.Then("I will catch an OutOfRetries Exception", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
     }
 }
 #pragma warning restore

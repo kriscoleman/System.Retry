@@ -5,8 +5,8 @@ using System.InternetTime;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using NUnit.Framework;
 using FakeItEasy;
+using NUnit.Framework;
 
 namespace System.Retry.Tests
 {
@@ -14,18 +14,25 @@ namespace System.Retry.Tests
     public class RetryIfNeededSteps
     {
         Client _fakeClient;
-        Client _client;
-        int _retryAttempts; // use with faking after IoC refactor of InternetTime
+        int _retryAttempts;
+        static Func<Exception, bool> TransientExceptionStrategy => exception => exception is WebException || ((AggregateException)exception).InnerException is WebException;
         public Action GetTimeSynchronous { get; private set; }
         public Func<Task<DateTime?>> GetTimeAsynchronous { get; private set; }
         public Action ResultDelegate { get; private set; }
         public Func<Task> ResultDelegateFunc { get; private set; }
 
-        [BeforeFeature]
-        public void SetUp()
+        [Given(@"I have supplied a retry action")]
+        public void GivenIHaveSuppliedARetryAction()
         {
+            GetTimeSynchronous = () => new NistTime(_fakeClient).Get();
+        }
+
+        [Given(@"I have defined a maximum of (.*) retry attempts")]
+        public void GivenIHaveDefinedAMaximumOfRetryAttempts(int p0)
+        {
+            _retryAttempts = p0;
             Func<string, double> func = NistTime.NistReponseToMillisecondsFunction;
-            _client =
+            _fakeClient =
                 A.Fake<Client>(
                     options =>
                         options.WithArgumentsForConstructor(new object[]
@@ -34,49 +41,29 @@ namespace System.Retry.Tests
                             NistTime.NistMediaTypeHeaderValue,
                             func
                         }));
-            _fakeClient =
-                A.Fake<Client>(
-                    options =>
-                        options.WithArgumentsForConstructor(new object[]
-                        {
-                            "http://0.0.0.0", // fake that we can't reach server
-                            NistTime.NistMediaTypeHeaderValue,
-                            func
-                        }));
+            A.CallTo(()=> _fakeClient.Url).ReturnsNextFromSequence(GetFakeResponseSequence(_retryAttempts).ToArray());
         }
 
-        [Given(@"I have supplied a retry action")]
-        public void GivenIHaveSuppliedARetryAction()
+        static IEnumerable<string> GetFakeResponseSequence(int retryAttempts)
         {
-            GetTimeSynchronous = () => new NistTime().Get();
-        }
-
-        [Given(@"I have defined a maximum of (.*) retry attempts")]
-        public void GivenIHaveDefinedAMaximumOfRetryAttempts(int p0)
-        {
-            _retryAttempts = p0;
-            A.CallTo(() => _client.GetAsync()).ReturnsNextFromSequence(GetFakedResponseSequence(_retryAttempts).ToArray());
-        }
-
-        IEnumerable<Task<DateTime?>> GetFakedResponseSequence(int retryAttempts)
-        {
-            for (var i = retryAttempts; i <= retryAttempts; i--)
-                yield return _fakeClient.GetAsync();
+            for (var i = 0; i < retryAttempts; i++)
+                yield return null;
         }
 
         [Given(@"I have supplied an async request to retry")]
         public void GivenIHaveSuppliedAnAsyncRequestToRetry()
         {
-            GetTimeAsynchronous = async () => await new NistTime().GetAsync();
+            GetTimeAsynchronous = async () => await new NistTime(_fakeClient).GetAsync();
         }
 
         [When(@"I retry and exceed my maximum")]
         public void WhenIRetryAndExceedMyMaximum()
         {
+            //todo: how to exceed maximum
             if (GetTimeSynchronous != null)
-                ResultDelegate = () => Retry.IfNeeded(() => GetTimeSynchronous, TransientExceptionStrategy);
+                ResultDelegate = () => Retry.IfNeeded(() => GetTimeSynchronous, TransientExceptionStrategy, maxRetryCount: _retryAttempts);
             else if (GetTimeAsynchronous != null)
-                ResultDelegateFunc = async () => await Retry.IfNeededAsync(GetTimeAsynchronous, TransientExceptionStrategy);
+                ResultDelegateFunc = async () => await Retry.IfNeededAsync(GetTimeAsynchronous, TransientExceptionStrategy, maxRetryCount: _retryAttempts);
         }
 
 
@@ -99,7 +86,5 @@ namespace System.Retry.Tests
                 }
             }
         }
-
-        static Func<Exception, bool> TransientExceptionStrategy => exception => exception is WebException || ((AggregateException)exception).InnerException is WebException;
     }
 }
