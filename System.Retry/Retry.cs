@@ -121,6 +121,10 @@ namespace System.Retry
         /// <summary>
         /// Executes the provided Transient Exception Strategy
         /// </summary>
+        /// <param name="trainsientExceptionStrategy">The trainsient exception strategy.</param>
+        /// <param name="encounteredExceptions">The encountered exceptions.</param>
+        /// <returns></returns>
+        /// <exception cref="System.Retry.NonTransientEncounteredAfterRetriesException"></exception>
         static bool ExceptionIsTransient(Func<Exception, bool> trainsientExceptionStrategy, IReadOnlyCollection<Exception> encounteredExceptions)
         {
             if (trainsientExceptionStrategy(encounteredExceptions.Last())) // the exception at the bottom of the stack is the one we want to check
