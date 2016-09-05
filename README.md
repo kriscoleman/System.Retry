@@ -14,7 +14,7 @@ For more info on this pattern, see: https://msdn.microsoft.com/en-us/library/dn5
 
 - for example, a strategy that would only allow retries on WebExceptions would be: 
 
-exception => exception is WebException
+- exception => exception is WebException
 
 For more info on handling Transient Faults, see: https://msdn.microsoft.com/en-us/library/hh680901(v=pandp.50).aspx
 
