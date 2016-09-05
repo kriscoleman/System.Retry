@@ -1,8 +1,8 @@
 # System.Retry
 A Retry Helper which adheres to MSDN's Retry Pattern guidelines. 
-For more info on this pattern, see: https://msdn.microsoft.com/en-us/library/dn589788.aspx
 This allows you to safely retry an action; defining a Transient Exception Strategy to determine if it is safe to retry, or if it should throw the exception encountered.
 
+For more info on this pattern, see: https://msdn.microsoft.com/en-us/library/dn589788.aspx
 
 * WARNING
  Any usages of a retry pattern should be idempotent: meaning, if the retryAction affects data, repeated retries need to have the same NET effect on the data. 
@@ -13,9 +13,10 @@ This allows you to safely retry an action; defining a Transient Exception Strate
 
 # Transient Exception Strategies
 When executing a Retry action, a Transient Exception Stragegy is required. This is a simple Func<Exception, bool> predicate which tells Retry when it is safe to retry. If an exception does not meet the criteria of your strategy, it will roll up all encountered exceptions (transient and non-transient) and throw. 
-For more info on handling Transient Faults, see: https://msdn.microsoft.com/en-us/library/hh680901(v=pandp.50).aspx
 
 - for example, a strategy that would only allow retries on WebExceptions would be: exception => exception is WebException
+
+For more info on handling Transient Faults, see: https://msdn.microsoft.com/en-us/library/hh680901(v=pandp.50).aspx
 
 # Out of Retries
 When out of retries (with no non-transient exceptions encountered), Retry will throw an OutOfRetriesException, which you can catch to either ignore, log, or display a friendly message to the user. 
