@@ -78,7 +78,7 @@ namespace System.Retry
                 }
             }
 
-            throw new AggregateException(OutOfRetriesMessage, encounteredExceptions); //out of retries
+            throw new OutOfRetriesException(encounteredExceptions);
         }
 
         /// <summary>
@@ -137,12 +137,20 @@ namespace System.Retry
         }
     }
 
+    /// <summary>
+    /// An Aggregate exception, thrown when Retry exceeds it's maximum retry attempts. All encountered exceptions will be rolled up. 
+    /// </summary>
+    /// <seealso cref="System.AggregateException" />
     public class OutOfRetriesException : AggregateException
     {
         public OutOfRetriesException(IEnumerable<Exception> encounteredExceptions) : base(Retry.OutOfRetriesMessage, encounteredExceptions)
         { }
     }
 
+    /// <summary>
+    /// An Aggregate exception, thrown when Retry encounters a non-transient fault. Will roll up all exceptions encountered, whether Transient or Not. 
+    /// </summary>
+    /// <seealso cref="System.AggregateException" />
     public class NonTransientEncounteredAfterRetriesException : AggregateException
     {
         public NonTransientEncounteredAfterRetriesException(IEnumerable<Exception> encounterExceptions)
