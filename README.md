@@ -2,7 +2,7 @@
 A Retry Helper which adheres to MSDN's Retry Pattern guidelines. 
 This allows you to safely retry an action; defining a Transient Exception Strategy to determine if it is safe to retry, or if it should throw the exception encountered.
 
-This can be particularly useful when making asynchronous web calls to a web service, when you expect to deal with latency or timeout issues. But it can be applied to any problem where a safe number of retries is appropriate, with a transient exception strategy, and with an idempotent net-affect on repeated attempts. 
+This can be particularly useful when making asynchronous web calls to a web service, when you expect to deal with latency or timeout issues. But it can be applied to any problem where a safe number of retries is appropriate. 
 
 For more info on this pattern, see: https://msdn.microsoft.com/en-us/library/dn589788.aspx
 
