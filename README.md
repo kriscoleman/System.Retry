@@ -8,4 +8,4 @@ This allows you to safely retry an action; defining a Transient Exception Strate
   If usages of this class modify data (e.g.;, executing commands to a service which creates orders in a database), then it's possible the retry pattern could result in multiple additions. Validation needs to be done on the Reciever-Side for these types of actions to prevent this and ensure Idempotency. 
   This is why it is only safe to use under indempotent conditions.
   
- # Testedwith NUnit 
+ * Tested with NUnit 
