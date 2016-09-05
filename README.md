@@ -1,5 +1,6 @@
 # System.Retry
-A Retry Helper which adheres to MSDN's Retry Pattern guidelines
+A Retry Helper which adheres to MSDN's Retry Pattern guidelines. 
+For more info on this pattern, see: https://msdn.microsoft.com/en-us/library/dn589788.aspx
 This allows you to safely retry an action; defining a Transient Exception Strategy to determine if it is safe to retry, or if it should throw the exception encountered.
 
 
@@ -9,4 +10,18 @@ This allows you to safely retry an action; defining a Transient Exception Strate
  This is why it is only safe to use under indempotent conditions.
  
 - Tested with NUnit
+
+# Transient Exception Strategies
+When executing a Retry action, a Transient Exception Stragegy is required. This is a simple Func<Exception, bool> predicate which tells Retry when it is safe to retry. If an exception does not meet the criteria of your strategy, it will roll up all encountered exceptions (transient and non-transient) and throw. 
+For more info on handling Transient Faults, see: https://msdn.microsoft.com/en-us/library/hh680901(v=pandp.50).aspx
+
+- for example, a strategy that would only allow retries on WebExceptions would be: exception => exception is WebException
+
+# Out of Retries
+When out of retries (with no non-transient exceptions encountered), Retry will throw an OutOfRetriesException, which you can catch to either ignore, log, or display a friendly message to the user. 
+
+# Encountering Non-Transient Exceptions 
+When Retry encounters an exception which your Transient Exception Strategy deems un-safe, it will respond in one of two ways. 
+If the unsafe exception is the first and only exception encountered, it will immediately throw without manipulating it. 
+if the unsafe exception is encountered after a few retry attemps, Retry will roll up all encountered exceptions (including the unsafe one) and throw them as an NonTransientEncounteredAfterRetriesException.
 
