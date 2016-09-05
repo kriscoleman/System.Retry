@@ -129,7 +129,7 @@ namespace System.Retry
             if (encounteredExceptions.Count == 1)
                 throw encounteredExceptions.Single(); //if there is only one exception encountered, better to throw it unmanipulated.
 
-            throw new NonTransientEncounteredAfterRetriesAggregateException(encounteredExceptions);
+            throw new NonTransientEncounteredAfterRetriesException(encounteredExceptions);
         }
     }
 
@@ -139,9 +139,9 @@ namespace System.Retry
         { }
     }
 
-    public class NonTransientEncounteredAfterRetriesAggregateException : AggregateException
+    public class NonTransientEncounteredAfterRetriesException : AggregateException
     {
-        public NonTransientEncounteredAfterRetriesAggregateException(IEnumerable<Exception> encounterExceptions)
+        public NonTransientEncounteredAfterRetriesException(IEnumerable<Exception> encounterExceptions)
             : base(Retry.NonTransientExceptionEncounteredMessage, encounterExceptions)
         { }
     }
