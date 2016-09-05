@@ -29,3 +29,4 @@ For more info on handling Transient Faults, see: https://msdn.microsoft.com/en-u
  if the unsafe exception is encountered after a few retry attemps, Retry will roll up all encountered exceptions (including the unsafe one) and throw them as an NonTransientEncounteredAfterRetriesException.
  
   - Tested with NUnit
+  - Documentation with help of GhostDoc, see: System.Retry/System.Retry.ReferenceGuide/System.Retry.chm
