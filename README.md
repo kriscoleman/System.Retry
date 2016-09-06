@@ -5,23 +5,22 @@ This allows you to safely retry an action; defining a Transient Exception Strate
 # Examples
 ```javascript
 
-// you can use it on synchrnous actions when you don't need to await, perhaps when a background thread command queue manages the posting of your data
+// you can use it on synchrnous actions when you don't need to await, 
+// perhaps when a background thread command queue manages the posting of your data
 Retry.IfNeeded(()=> CloudService.Post(credentials)); 
 
 // you can use it asynchronously to await data
- return await Retry.IfNeeded(async ()=> CloudService.GetMyMessages(credentials));
+return await Retry.IfNeeded(async ()=> CloudService.GetMyMessages(credentials));
  
- // you can use closures if you need to be more verbose or complex
- return await Retry.IfNeeded(async ()=>
-  {
-     var mesesages = await CloudService.GetMyMessages(credentials); 
-     return messages;
-  });
+// you can use closures if you need to be more verbose or complex
+return await Retry.IfNeeded(async ()=>
+ {
+    var mesesages = await CloudService.GetMyMessages(credentials); 
+    return messages;
+ });
   
-  //it's best to specify your own Transient exception strategy
-  Retry.IfNeeded(()=> CloudService.Post(credentials), exception => exception is WebException); // will only retry if WebException
-  
-  
+ //it's best to specify your own Transient exception strategy
+ Retry.IfNeeded(()=> CloudService.Post(credentials), exception => exception is WebException); // will only retry if WebException
 
 ```
 
