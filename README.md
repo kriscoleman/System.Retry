@@ -2,6 +2,29 @@
 A Retry Helper which adheres to MSDN's Retry Pattern guidelines. 
 This allows you to safely retry an action; defining a Transient Exception Strategy to determine if it is safe to retry, or if it should throw the exception encountered.
 
+>examples
+```javascript
+
+// you can use it on synchrnous actions when you don't need to await, perhaps when a background thread command queue manages the posting of your data
+Retry.IfNeeded(()=> CloudService.Post(credentials)); 
+
+// you can use it asynchronously to await data
+ return await Retry.IfNeeded(async ()=> CloudService.GetMyMessages(credentials));
+ 
+ // you can use closures if you need to be more verbose or complex
+ return await Retry.IfNeeded(async ()=>
+  {
+     var mesesages = await CloudService.GetMyMessages(credentials); 
+     return messages;
+  });
+  
+  //it's best to specify your own Transient exception strategy
+  Retry.IfNeeded(()=> CloudService.Post(credentials), exception => exception is WebException); // will only retry if WebException
+  
+  
+
+```
+
 This can be particularly useful when making asynchronous web calls to a web service, when you expect to deal with latency or timeout issues. But it can be applied to any problem where a safe number of retries is appropriate. 
 
 For more info on this pattern, see: https://msdn.microsoft.com/en-us/library/dn589788.aspx
