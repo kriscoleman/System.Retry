@@ -2,7 +2,7 @@
 A Retry Helper which adheres to MSDN's Retry Pattern guidelines. 
 This allows you to safely retry an action; defining a Transient Exception Strategy to determine if it is safe to retry, or if it should throw the exception encountered.
 
->examples
+# Examples
 ```javascript
 
 // you can use it on synchrnous actions when you don't need to await, perhaps when a background thread command queue manages the posting of your data
